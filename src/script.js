@@ -61,7 +61,7 @@ const door = new THREE.Mesh(
   new THREE.MeshStandardMaterial({ color: 0xfa1283 })
 );
 door.position.y = doorProps.height / 2;
-door.position.z = wallProps.depth / 2;
+door.position.z = wallProps.depth / 2 + 0.01;
 house.add(door);
 
 gui.add(door.material, "wireframe").name("Door wireframe");
@@ -96,6 +96,36 @@ house.add(bush1, bush2, bush3, bush4);
 
 gui.add(bushMaterial, "wireframe").name("Bush wireframe");
 
+/**
+ * GRAVES
+ */
+const graves = new THREE.Group();
+scene.add(graves);
+
+const graveProps = { width: 0.6, height: 0.8, depth: 0.2 };
+const graveGeometry = new THREE.BoxGeometry(
+  graveProps.width,
+  graveProps.height,
+  graveProps.depth
+);
+const graveMaterial = new THREE.MeshStandardMaterial({ color: "grey" });
+
+for (let i = 0; i < 30; i++) {
+  const angle = Math.random() * Math.PI * 2;
+  const radius = 3 + Math.random() * 6; // Range from 3 - 9
+  console.log(radius);
+  const x = Math.sin(angle) * radius;
+  const z = Math.cos(angle) * radius;
+  const grave = new THREE.Mesh(graveGeometry, graveMaterial);
+  
+  grave.position.set(x, graveProps.height / 2.5, z);
+  grave.rotation.y = (Math.random() - 0.5) * 0.4;
+  grave.rotation.z = (Math.random() - 0.5) * 0.4;
+
+  graves.add(grave);
+}
+
+gui.add(graveMaterial, "wireframe").name("Grave wireframe");
 
 // Floor
 const floor = new THREE.Mesh(
