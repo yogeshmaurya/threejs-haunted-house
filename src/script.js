@@ -28,9 +28,9 @@ const house = new THREE.Group();
 scene.add(house);
 
 // WALLS
-const wallProps = { length: 4, height: 3, width: 4 };
+const wallProps = { depth: 4, height: 3, width: 4 };
 const walls = new THREE.Mesh(
-  new THREE.BoxGeometry(wallProps.length, wallProps.height, wallProps.width),
+  new THREE.BoxGeometry(wallProps.width, wallProps.height, wallProps.depth),
   new THREE.MeshStandardMaterial({ color: 0x0afd3f })
 );
 walls.position.y = wallProps.height / 2;
@@ -57,8 +57,45 @@ gui.add(roof.material, "wireframe").name("Roof wireframe");
 // DOOR
 const doorProps = { height: 2, width: 2 };
 const door = new THREE.Mesh(
-  new THREE.PlaneGeometry(doorProps.width, doorProps.height)
+  new THREE.PlaneGeometry(doorProps.width, doorProps.height),
+  new THREE.MeshStandardMaterial({ color: 0xfa1283 })
 );
+door.position.y = doorProps.height / 2;
+door.position.z = wallProps.depth / 2;
+house.add(door);
+
+gui.add(door.material, "wireframe").name("Door wireframe");
+
+// BUSHES
+// TODO: REFACTOR THIS CODE
+const bushProps = { radius: 1, widthSegments: 16, heightSegments: 16 };
+const bushGeometry = new THREE.SphereGeometry(
+  bushProps.radius,
+  bushProps.widthSegments,
+  bushProps.heightSegments
+);
+const bushMaterial = new THREE.MeshStandardMaterial(0x00ff00);
+
+const bush1 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush1.scale.set(0.5, 0.5, 0.5);
+bush1.position.set(0.8, 0.2, 2.2);
+
+const bush2 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush2.scale.set(0.25, 0.25, 0.25);
+bush2.position.set(1.4, 0.1, 2.1);
+
+const bush3 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush3.scale.set(0.4, 0.4, 0.4);
+bush3.position.set(-0.8, 0.1, 2.2);
+
+const bush4 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush4.scale.set(0.15, 0.15, 0.15);
+bush4.position.set(-1, 0.05, 2.6);
+
+house.add(bush1, bush2, bush3, bush4);
+
+gui.add(bushMaterial, "wireframe").name("Bush wireframe");
+
 
 // Floor
 const floor = new THREE.Mesh(
