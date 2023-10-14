@@ -81,7 +81,11 @@ house.add(walls);
 gui.add(walls.material, "wireframe").name("Wall wireframe");
 
 // ROOF
-const roofProps = { baseSize: wallProps.width, height: 1.5, numberOfSides: 4 };
+const roofProps = {
+  baseSize: wallProps.width / 1.25,
+  height: 1.5,
+  numberOfSides: 4,
+};
 const roof = new THREE.Mesh(
   new THREE.ConeGeometry(
     roofProps.baseSize,
@@ -163,7 +167,7 @@ const graveGeometry = new THREE.BoxGeometry(
 );
 const graveMaterial = new THREE.MeshStandardMaterial({ color: "grey" });
 
-for (let i = 0; i < 30; i++) {
+for (let i = 0; i < 50; i++) {
   const angle = Math.random() * Math.PI * 2;
   const radius = 3 + Math.random() * 6; // Range from 3 - 9
 
@@ -175,6 +179,7 @@ for (let i = 0; i < 30; i++) {
   grave.rotation.y = (Math.random() - 0.5) * 0.4;
   grave.rotation.z = (Math.random() - 0.5) * 0.4;
 
+  grave.castShadow = true;
   graves.add(grave);
 }
 
@@ -232,6 +237,15 @@ doorLightCameraHelper.visible = false;
 house.add(doorLightCameraHelper);
 
 /**
+ * GHOSTS
+ */
+const ghost1 = new THREE.PointLight("#ff00ff", 2, 3);
+const ghost2 = new THREE.PointLight("#00ffff", 2, 3);
+const ghost3 = new THREE.PointLight("#ffff00", 2, 3);
+
+scene.add(ghost1, ghost2, ghost3);
+
+/**
  * Sizes
  */
 const sizes = {
@@ -273,6 +287,23 @@ const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
 /**
+ * SHADOWS
+ */
+moonLight.castShadow = true;
+doorLight.castShadow = true;
+ghost1.castShadow = true;
+ghost2.castShadow = true;
+ghost3.castShadow = true;
+
+walls.castShadow = true;
+bush1.castShadow = true;
+bush2.castShadow = true;
+bush3.castShadow = true;
+bush4.castShadow = true;
+
+floor.receiveShadow = true;
+
+/**
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
@@ -282,6 +313,7 @@ renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setClearColor("#262837");
+renderer.shadowMap.enabled = true;
 
 /**
  * Animate
@@ -290,6 +322,22 @@ const clock = new THREE.Clock();
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+
+  // Update ghosts
+  const ghost1Angle = elapsedTime * 0.5;
+  ghost1.position.x = Math.cos(ghost1Angle) * 4;
+  ghost1.position.z = Math.sin(ghost1Angle) * 4;
+  ghost1.position.y = Math.sin(elapsedTime) * 3;
+
+  const ghost2Angle = -elapsedTime * 0.32;
+  ghost2.position.x = Math.cos(ghost2Angle) * 6;
+  ghost2.position.z = Math.sin(ghost2Angle) * 6;
+  ghost2.position.y = Math.sin(elapsedTime) * 3;
+
+  const ghost3Angle = -elapsedTime * 0.18;
+  ghost3.position.x = Math.cos(ghost3Angle) * 4;
+  ghost3.position.z = Math.sin(ghost3Angle) * 4;
+  ghost3.position.y = Math.sin(elapsedTime) * 1;
 
   // Update controls
   controls.update();
